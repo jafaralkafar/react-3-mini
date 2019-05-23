@@ -6,6 +6,8 @@ import './App.css';
 // Toast notification dependencies
 import { ToastContainer, toast } from 'react-toastify';
 
+let baseUrl = 'https://joes-autos.herokuapp.com/api'
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -29,8 +31,14 @@ class App extends Component {
   }
 
   getVehicles() {
-    // axios (GET)
-    // setState with response -> vehiclesToDisplay
+    axios.get(baseUrl + '/vehicles').then(response => {
+      this.setState({
+        vehiclesToDisplay:response.data
+      })
+    }).catch(err => {
+      console.log(err)
+      toast.error('this did not work')
+    })
   }
 
   getPotentialBuyers() {
@@ -39,8 +47,14 @@ class App extends Component {
   }
 
   sellCar(id) {
-    // axios (DELETE)
-    // setState with response -> vehiclesToDisplay
+    axios.delete(`${baseUrl}/vehicles/${id}`)
+    .then(response=>{
+      // console.log('response:', response)
+      this.setState({vehiclesToDisplay: response.data.vehicles})
+    })
+    .catch(err=>{
+      toast.error('no')
+    })
   }
 
   filterByMake() {
@@ -57,9 +71,14 @@ class App extends Component {
     // setState with response -> vehiclesToDisplay
   }
 
-  updatePrice(priceChange, id) {
-    // axios (PUT)
-    // setState with response -> vehiclesToDisplay
+  updatePrice(change, id) {
+    axios.put(`${baseUrl}/vehicles/${id}/${change}`)
+    .then(response =>{
+      this.setState({vehiclesToDisplay: response.data.vehicles})
+    }).catch(err =>{
+      console.log(err)
+      toast.error('this no work')
+    })
   }
 
   addCar() {
@@ -71,8 +90,12 @@ class App extends Component {
       price: this.price.value
     };
 
-    // axios (POST)
-    // setState with response -> vehiclesToDisplay
+    axios.post(baseUrl + '/vehicles', newCar)
+    .then(response=>{
+      this.setState({vehiclesToDisplay:response.data.vehicles})
+    }).catch(err=>{
+      toast.error('didnt add')
+    })
   }
 
   addBuyer() {
@@ -87,8 +110,7 @@ class App extends Component {
   }
 
   deleteBuyer(id) {
-    // axios (DELETE)
-    //setState with response -> buyersToDisplay
+    
   }
 
   nameSearch() {
